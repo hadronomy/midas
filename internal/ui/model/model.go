@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/charmbracelet/bubbles/help"
 	"github.com/charmbracelet/bubbles/key"
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/huh"
@@ -14,15 +15,35 @@ import (
 
 const maxWidth = 80
 
-type state int
+type keyMap struct {
+	ToggleFullscreen key.Binding
+	Quit             key.Binding
+}
 
-const (
-	statusNormal state = iota
-	stateDone
-)
+func (k keyMap) ShortHelp() []key.Binding {
+	return []key.Binding{k.ToggleFullscreen, k.Quit}
+}
+
+func (k keyMap) FullHelp() [][]key.Binding {
+	return [][]key.Binding{
+		{k.ToggleFullscreen, k.Quit},
+	}
+}
+
+var keys = keyMap{
+	ToggleFullscreen: key.NewBinding(
+		key.WithKeys("f"),
+		key.WithHelp("f", "toggle fullscreen"),
+	),
+	Quit: key.NewBinding(
+		key.WithKeys("q", "esc", "ctrl+c"),
+		key.WithHelp("q", "quit"),
+	),
+}
 
 type Model struct {
-	state        state
+	keys         keyMap
+	help         help.Model
 	isFullscreen bool
 	lg           *lipgloss.Renderer
 	styles       *ui.Styles
@@ -31,7 +52,12 @@ type Model struct {
 }
 
 func NewModel() Model {
-	m := Model{width: maxWidth, isFullscreen: false}
+	m := Model{
+		width:        maxWidth,
+		isFullscreen: false,
+		keys:         keys,
+		help:         help.New(),
+	}
 	m.lg = lipgloss.DefaultRenderer()
 	m.styles = ui.NewStyles(m.lg)
 
@@ -180,12 +206,15 @@ func (m Model) View() string {
 		}
 		body := lipgloss.JoinHorizontal(lipgloss.Top, form, status)
 
-		footer := m.appBoundaryView(m.form.Help().ShortHelpView(
-			append(
+		footer := lipgloss.JoinVertical(
+			lipgloss.Top,
+			m.appBoundaryView(m.form.Help().ShortHelpView(
 				m.form.KeyBinds(),
-				key.NewBinding(key.WithKeys("f"), key.WithHelp("f", "Toggle fullscreen")),
+			)),
+			m.appBoundaryView(
+				m.help.View(m.keys),
 			),
-		))
+		)
 		if len(errors) > 0 {
 			footer = m.appErrorBoundaryView("")
 		}
