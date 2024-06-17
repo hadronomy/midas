@@ -31,7 +31,7 @@ type Model struct {
 }
 
 func NewModel() Model {
-	m := Model{width: maxWidth, isFullscreen: true}
+	m := Model{width: maxWidth, isFullscreen: false}
 	m.lg = lipgloss.DefaultRenderer()
 	m.styles = ui.NewStyles(m.lg)
 
@@ -69,7 +69,14 @@ func NewModel() Model {
 }
 
 func (m Model) Init() tea.Cmd {
-	return m.form.Init()
+	var cmds []tea.Cmd
+	if m.isFullscreen {
+		cmds = append(cmds, tea.EnterAltScreen)
+	} else {
+		cmds = append(cmds, tea.ExitAltScreen)
+	}
+	cmds = append(cmds, m.form.Init())
+	return tea.Batch(cmds...)
 }
 
 func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
