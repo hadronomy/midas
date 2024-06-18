@@ -10,7 +10,6 @@ import (
 	"github.com/charmbracelet/huh"
 	"github.com/charmbracelet/lipgloss"
 	"github.com/hadronomy/midas/internal/ui"
-	"github.com/hadronomy/midas/internal/ui/color"
 )
 
 const maxWidth = 80
@@ -36,7 +35,7 @@ var keys = keyMap{
 		key.WithHelp("f", "toggle fullscreen"),
 	),
 	Quit: key.NewBinding(
-		key.WithKeys("q", "esc", "ctrl+c"),
+		key.WithKeys("q", "ctrl+c"),
 		key.WithHelp("q", "quit"),
 	),
 }
@@ -75,6 +74,12 @@ func NewModel() Model {
 				Title("Choose your level").
 				Description("This will determine your benefits package"),
 
+			huh.NewMultiSelect[string]().
+				Key("skills").
+				Options(huh.NewOptions("Sneaking", "Magic", "Swordplay")...).
+				Title("Choose your skills").
+				Description("This will determine your starting equipment"),
+
 			huh.NewConfirm().
 				Key("done").
 				Title("All done?").
@@ -110,10 +115,10 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	case tea.WindowSizeMsg:
 		m.width = min(msg.Width, maxWidth) - m.styles.Base.GetHorizontalFrameSize()
 	case tea.KeyMsg:
-		switch msg.String() {
-		case "esc", "ctrl+c", "q":
+		switch {
+		case key.Matches(msg, m.keys.Quit):
 			return m, tea.Quit
-		case "f":
+		case key.Matches(msg, m.keys.ToggleFullscreen):
 			m.isFullscreen = !m.isFullscreen
 			if m.isFullscreen {
 				return m, tea.EnterAltScreen
@@ -200,24 +205,30 @@ func (m Model) View() string {
 		}
 
 		errors := m.form.Errors()
-		header := m.appBoundaryView("Charm Employment Application")
+		header := m.appOkBoundaryView("Charm Employment Application")
 		if len(errors) > 0 {
 			header = m.appErrorBoundaryView(m.errorView())
 		}
 		body := lipgloss.JoinHorizontal(lipgloss.Top, form, status)
 
+		var footerStyle lipgloss.Style = m.styles.HeaderText
+		if len(errors) > 0 {
+			footerStyle = m.styles.ErrorHeaderText
+		}
+
 		footer := lipgloss.JoinVertical(
 			lipgloss.Top,
-			m.appBoundaryView(m.form.Help().ShortHelpView(
-				m.form.KeyBinds(),
-			)),
+			m.appBoundaryView(
+				m.form.Help().ShortHelpView(
+					m.form.KeyBinds(),
+				),
+				footerStyle,
+			),
 			m.appBoundaryView(
 				m.help.View(m.keys),
+				footerStyle,
 			),
 		)
-		if len(errors) > 0 {
-			footer = m.appErrorBoundaryView("")
-		}
 
 		return s.Base.Render(header + "\n" + body + "\n\n" + footer)
 	}
@@ -231,24 +242,22 @@ func (m Model) errorView() string {
 	return s
 }
 
-func (m Model) appBoundaryView(text string) string {
+func (m Model) appBoundaryView(text string, style lipgloss.Style) string {
 	return lipgloss.PlaceHorizontal(
 		m.width,
 		lipgloss.Left,
-		m.styles.HeaderText.Render(text),
+		style.Render(text),
 		lipgloss.WithWhitespaceChars("/"),
-		lipgloss.WithWhitespaceForeground(color.Indigo),
+		lipgloss.WithWhitespaceForeground(style.GetForeground()),
 	)
 }
 
+func (m Model) appOkBoundaryView(text string) string {
+	return m.appBoundaryView(text, m.styles.HeaderText)
+}
+
 func (m Model) appErrorBoundaryView(text string) string {
-	return lipgloss.PlaceHorizontal(
-		m.width,
-		lipgloss.Left,
-		m.styles.ErrorHeaderText.Render(text),
-		lipgloss.WithWhitespaceChars("/"),
-		lipgloss.WithWhitespaceForeground(color.Red),
-	)
+	return m.appBoundaryView(text, m.styles.ErrorHeaderText)
 }
 
 func (m Model) getRole() (string, string) {
