@@ -12,7 +12,7 @@ import (
 	"github.com/hadronomy/midas/internal/ui"
 )
 
-const maxWidth = 80
+const maxWidth = 90
 
 type keyMap struct {
 	ToggleFullscreen key.Binding
@@ -48,6 +48,7 @@ type Model struct {
 	styles       *ui.Styles
 	form         *huh.Form
 	width        int
+	height       int
 }
 
 func NewModel() Model {
@@ -76,7 +77,22 @@ func NewModel() Model {
 
 			huh.NewMultiSelect[string]().
 				Key("skills").
-				Options(huh.NewOptions("🗡️ Sneaking", "🪄 Magic", "⚔️ Swordplay")...).
+				Options(huh.NewOptions(
+					"🗡️ Sneaking",
+					"🪄 Magic",
+					"⚔️ Swordplay",
+					"🛡️ Shielding",
+					"🏹 Archery",
+					"🔥 Fire Magic",
+					"🌿 Nature Magic",
+					"💀 Necromancy",
+					"🌩️ Lightning Magic",
+					"🌪️ Wind Magic",
+					"🌊 Water Magic",
+					"🌑 Dark Magic",
+					"🌞 Light Magic",
+					"🔮 Enchantment",
+				)...).
 				Title("Choose your skills").
 				Description("This will determine your starting equipment"),
 
@@ -114,6 +130,7 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	switch msg := msg.(type) {
 	case tea.WindowSizeMsg:
 		m.width = min(msg.Width, maxWidth) - m.styles.Base.GetHorizontalFrameSize()
+		m.height = msg.Height
 	case tea.KeyMsg:
 		switch {
 		case key.Matches(msg, m.keys.Quit):
@@ -169,7 +186,7 @@ func (m Model) View() string {
 		}
 
 		// Form (left side)
-		v := strings.TrimSuffix(m.form.View(), "\n\n")
+		v := strings.TrimSuffix(m.form.WithHeight(m.height-15).View(), "\n\n")
 		form := m.lg.NewStyle().Margin(1, 0).Render(v)
 
 		// Status (right side)
@@ -192,16 +209,24 @@ func (m Model) View() string {
 				buildInfo = fmt.Sprintf("%s\n%s", class, level)
 			}
 
-			const statusWidth = 28
-			statusMarginLeft := m.width - statusWidth - lipgloss.Width(form) - s.Status.GetMarginRight()
-			status = s.Status.
-				Height(lipgloss.Height(form)).
-				Width(statusWidth).
-				MarginLeft(statusMarginLeft).
-				Render(s.StatusHeader.Render("Current Build") + "\n" +
-					buildInfo +
-					role +
-					jobDescription)
+			formWidth := lipgloss.Width(form)
+			const maxStatusWidth = 30
+			const minStatusWidth = 20
+			statusWidth := m.width - formWidth
+			if statusWidth > maxStatusWidth {
+				statusWidth = maxStatusWidth
+			}
+			statusMarginLeft := m.width - statusWidth - formWidth - 2
+			if statusWidth >= minStatusWidth && statusMarginLeft > 0 {
+				status = s.Status.
+					Height(lipgloss.Height(form)).
+					Width(statusWidth).
+					MarginLeft(statusMarginLeft).
+					Render(s.StatusHeader.Render("Current Build") + "\n" +
+						buildInfo +
+						role +
+						jobDescription)
+			}
 		}
 
 		errors := m.form.Errors()
@@ -230,7 +255,15 @@ func (m Model) View() string {
 			),
 		)
 
-		return s.Base.Render(header + "\n" + body + "\n\n" + footer)
+		return s.Base.Render(
+			lipgloss.JoinVertical(
+				lipgloss.Top,
+				header,
+				body,
+				"\n",
+				footer,
+			),
+		)
 	}
 }
 
