@@ -76,7 +76,7 @@ func NewModel() Model {
 
 			huh.NewMultiSelect[string]().
 				Key("skills").
-				Options(huh.NewOptions("Sneaking", "Magic", "Swordplay")...).
+				Options(huh.NewOptions("🗡️ Sneaking", "🪄 Magic", "⚔️ Swordplay")...).
 				Title("Choose your skills").
 				Description("This will determine your starting equipment"),
 
