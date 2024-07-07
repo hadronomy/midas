@@ -78,18 +78,6 @@ func NewModel() Model {
 			huh.NewMultiSelect[string]().
 				Key("skills").
 				Options(huh.NewOptions(
-					"🗡️ Sneaking",
-					"🪄 Magic",
-					"⚔️ Swordplay",
-					"🛡️ Shielding",
-					"🏹 Archery",
-					"🔥 Fire Magic",
-					"🌿 Nature Magic",
-					"💀 Necromancy",
-					"🌩️ Lightning Magic",
-					"🌪️ Wind Magic",
-					"🌊 Water Magic",
-					"🌑 Dark Magic",
 					"🌞 Light Magic",
 					"🔮 Enchantment",
 				)...).
