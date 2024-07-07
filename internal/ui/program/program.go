@@ -41,14 +41,14 @@ var keys = keyMap{
 }
 
 type Model struct {
-	keys         keyMap
 	help         help.Model
-	isFullscreen bool
 	lg           *lipgloss.Renderer
 	styles       *ui.Styles
 	form         *huh.Form
+	keys         keyMap
 	width        int
 	height       int
+	isFullscreen bool
 }
 
 func NewModel() Model {
