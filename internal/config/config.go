@@ -2,7 +2,7 @@ package config
 
 import semver "github.com/hashicorp/go-version"
 
-type Template struct {
+type TemplateProject struct {
 	projectName   string
 	version       *semver.Version
 	description   string
