@@ -49,7 +49,7 @@ func NewModel() Model {
 	m.lg = lipgloss.DefaultRenderer()
 	m.styles = ui.NewStyles(m.lg)
 
-	var formWidth = 45
+	formWidth := 45
 
 	m.form = huh.NewForm(
 		huh.NewGroup(
@@ -215,7 +215,7 @@ func (m Model) View() string {
 		}
 		body := lipgloss.JoinHorizontal(lipgloss.Top, form, status)
 
-		var footerStyle = m.styles.HeaderText
+		footerStyle := m.styles.HeaderText
 		if len(errors) > 0 {
 			footerStyle = m.styles.ErrorHeaderText
 		}
