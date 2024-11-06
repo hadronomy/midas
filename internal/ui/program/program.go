@@ -1,6 +1,7 @@
 package program
 
 import (
+	"errors"
 	"fmt"
 	"strings"
 
@@ -12,22 +13,9 @@ import (
 	"github.com/hadronomy/midas/internal/ui"
 )
 
-const maxWidth = 90
-
-type keyMap struct {
-	ToggleFullscreen key.Binding
-	Quit             key.Binding
-}
-
-func (k keyMap) ShortHelp() []key.Binding {
-	return []key.Binding{k.ToggleFullscreen, k.Quit}
-}
-
-func (k keyMap) FullHelp() [][]key.Binding {
-	return [][]key.Binding{
-		{k.ToggleFullscreen, k.Quit},
-	}
-}
+const (
+	maxWidth = 90
+)
 
 var keys = keyMap{
 	ToggleFullscreen: key.NewBinding(
@@ -61,6 +49,8 @@ func NewModel() Model {
 	m.lg = lipgloss.DefaultRenderer()
 	m.styles = ui.NewStyles(m.lg)
 
+	var formWidth = 45
+
 	m.form = huh.NewForm(
 		huh.NewGroup(
 			huh.NewSelect[string]().
@@ -89,7 +79,7 @@ func NewModel() Model {
 				Title("All done?").
 				Validate(func(v bool) error {
 					if !v {
-						return fmt.Errorf("welp, finish up then")
+						return errors.New("welp, finish up then")
 					}
 					return nil
 				}).
@@ -97,7 +87,7 @@ func NewModel() Model {
 				Negative("Wait, no"),
 		),
 	).
-		WithWidth(45).
+		WithWidth(formWidth).
 		WithShowHelp(false).
 		WithShowErrors(false)
 	return m
@@ -158,6 +148,7 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 func (m Model) View() string {
 	s := m.styles
 
+	//exhaustive:ignore
 	switch m.form.State {
 	case huh.StateCompleted:
 		title, role := m.getRole()
@@ -167,7 +158,6 @@ func (m Model) View() string {
 		fmt.Fprintf(&b, "Your job description is as follows:\n\n%s\n\nPlease proceed to HR immediately.", role)
 		return s.Status.Margin(0, 1).Padding(1, 2).Width(48).Render(b.String()) + "\n\n"
 	default:
-
 		var class string
 		if m.form.GetString("class") != "" {
 			class = "Class: " + m.form.GetString("class")
@@ -204,6 +194,7 @@ func (m Model) View() string {
 			if statusWidth > maxStatusWidth {
 				statusWidth = maxStatusWidth
 			}
+			//mnd:ignore
 			statusMarginLeft := m.width - statusWidth - formWidth - 2
 			if statusWidth >= minStatusWidth && statusMarginLeft > 0 {
 				status = s.Status.
@@ -224,7 +215,7 @@ func (m Model) View() string {
 		}
 		body := lipgloss.JoinHorizontal(lipgloss.Top, form, status)
 
-		var footerStyle lipgloss.Style = m.styles.HeaderText
+		var footerStyle = m.styles.HeaderText
 		if len(errors) > 0 {
 			footerStyle = m.styles.ErrorHeaderText
 		}
