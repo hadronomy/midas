@@ -1,0 +1,44 @@
+# Binary files and executables
+/tmp/
+/bin/
+/dist/
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+*.out
+
+# Air live reloading tool artifacts
+air.log
+tmp/
+
+# Go build artifacts
+*.o
+*.a
+*.log
+*.test
+
+# Go modules
+/vendor/
+/go.sum
+/go.mod
+
+# IDE/editor specific
+.idea/
+.vscode/
+*.swp
+
+# OS specific files
+.DS_Store
+Thumbs.db
+
+# Logs and environment files
+*.log
+.env
+*.env
+
+# Coverage files
+coverage.out
+coverage/
+*.coverprofile
