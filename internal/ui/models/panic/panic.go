@@ -123,7 +123,7 @@ func createErrorMessage(err interface{}) string {
 
 func createLogFileReport() string {
 	top := lipgloss.NewStyle().Foreground(color.Indigo).Render("A log file has been created at:")
-	bottom := lipgloss.NewStyle().Render(app.LogFilePath)
+	bottom := lipgloss.NewStyle().Foreground(lipgloss.Color("4")).Render(fmt.Sprintf("file://%s", app.LogFilePath))
 	content := lipgloss.JoinVertical(lipgloss.Left, top, bottom)
 	return lipgloss.NewStyle().Margin(1, 1).Render(content)
 }
