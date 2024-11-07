@@ -7,7 +7,6 @@ require (
 	github.com/charmbracelet/bubbletea v0.26.3
 	github.com/charmbracelet/huh v0.4.2
 	github.com/charmbracelet/lipgloss v0.11.0
-	github.com/muesli/reflow v0.3.0
 )
 
 require go.uber.org/multierr v1.10.0 // indirect
