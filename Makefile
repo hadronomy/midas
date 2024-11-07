@@ -9,6 +9,9 @@ BIN := ./bin/$(APP_NAME)
 run:
 	go run ./cmd/cli/main.go
 
+watch:
+	air
+
 # Build the binary
 build:
 	go build -o $(BIN) ./cmd/cli/main.go
