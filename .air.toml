@@ -11,21 +11,3 @@ delay = 1000
 exclude_dir = ["tmp", "vendor"]
 # File extensions to include in monitoring
 include_ext = ["go", "tmpl", "html"]
-
-# Log settings for debugging or build events (optional)
-[log]
-level = "info"     # Log level, options: debug, info, warn, error
-output = "air.log" # Log output file
-
-# Watching files and directories
-[watch]
-# Exclude specific files (optional)
-exclude_file = ["*.md", "*.toml"]
-# Include extensions, like HTML templates or config files, for live reload
-include_ext = ["go", "tmpl", "html"]
-
-# Running the binary with Tmux integration
-[run]
-# Command to execute the Tmux integration script instead of the binary directly
-# Environment variables for the application
-env = ["APP_ENV=development", "DB_HOST=localhost", "DEBUG=true"]
