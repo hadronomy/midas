@@ -37,6 +37,7 @@ type Model struct {
 	width        int
 	height       int
 	isFullscreen bool
+	isQuitting   bool
 }
 
 func NewModel() Model {
@@ -112,6 +113,7 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	case tea.KeyMsg:
 		switch {
 		case key.Matches(msg, m.keys.Quit):
+			m.isQuitting = true
 			return m, tea.Quit
 		case key.Matches(msg, m.keys.ToggleFullscreen):
 			m.isFullscreen = !m.isFullscreen
@@ -147,6 +149,10 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 func (m Model) View() string {
 	s := m.styles
+
+	if m.isQuitting {
+		return ""
+	}
 
 	//exhaustive:ignore
 	switch m.form.State {
