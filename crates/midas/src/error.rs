@@ -9,6 +9,10 @@ pub enum Error {
     #[diagnostic(code(midas::io_error))]
     IoError(#[from] std::io::Error),
 
+    #[error("Setup error: {0}")]
+    #[diagnostic(code(midas::setup_error))]
+    SetupError(miette::Report),
+
     #[error("Path not found: {0}")]
     #[diagnostic(code(midas::path_not_found))]
     PathNotFound(PathBuf),
@@ -16,6 +20,11 @@ pub enum Error {
     #[error("Invalid path format")]
     #[diagnostic(code(midas::invalid_path))]
     InvalidPathFormat,
+
+    #[error("Unimplemented feature")]
+    #[diagnostic(code(midas::unimplemented))]
+    #[diagnostic(help("Ooops! This feature is not implemented yet."))]
+    Unimplemented,
 
     #[error(transparent)]
     #[diagnostic(transparent)]

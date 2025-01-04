@@ -13,20 +13,7 @@ deno    = ["serde", "deno_ast", "deno_core", "deno_graph", "deno_runtime", "deno
 serde   = ["dep:serde", "serde_json", "serde_derive"]
 
 [dependencies]
-anstream    = { workspace = true }
-anyhow      = { workspace = true }
-clap        = { workspace = true }
-globset     = { workspace = true, features = ["serde"] }
-human-panic = { workspace = true }
-miette      = { workspace = true }
-owo-colors  = { workspace = true }
-petgraph    = { workspace = true }
-rkyv        = { workspace = true }
-semver      = { workspace = true }
-tempfile    = { workspace = true }
-thiserror   = { workspace = true }
-tokio       = { workspace = true }
-walkdir     = { workspace = true }
+midas-cli = { workspace = true }
 
 # Optional deno dependencies
 deno_ast     = { workspace = true, optional = true }
@@ -35,18 +22,29 @@ deno_graph   = { workspace = true, optional = true }
 deno_runtime = { workspace = true, optional = true }
 deno_semver  = { workspace = true, optional = true }
 
-# Optional serde dependencies
+anstream       = { workspace = true }
+anyhow         = { workspace = true }
+clap           = { workspace = true }
 file_type_enum = { workspace = true }
 flate2         = { workspace = true }
+globset        = { workspace = true, features = ["serde"] }
+human-panic    = { workspace = true }
 itertools      = { workspace = true }
+miette         = { workspace = true, features = ["fancy"] }
 once_cell      = { workspace = true }
+owo-colors     = { workspace = true }
+petgraph       = { workspace = true }
+rkyv           = { workspace = true }
+semver         = { workspace = true }
 serde          = { workspace = true, optional = true }
 serde_derive   = { workspace = true, optional = true }
 serde_json     = { workspace = true, optional = true }
+tempfile       = { workspace = true }
+textwrap       = { workspace = true }
+thiserror      = { workspace = true }
+tokio          = { workspace = true }
 vfs            = { workspace = true }
-
-
-midas-cli = { workspace = true }
+walkdir        = { workspace = true }
 
 
 [build-dependencies]
