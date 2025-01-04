@@ -11,8 +11,12 @@ fix:
 test:
     cargo nextest run
 
-run:
-    cargo run
+run *release:
+    @if [ "{{release}}" = "release" ]; then \
+        cargo run --release; \
+    else \
+        cargo run; \
+    fi
 
 dev:
     mise run
