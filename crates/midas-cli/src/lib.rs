@@ -50,6 +50,7 @@ pub enum Command {
             option = Style::new().bold(),
         ),
     )]
+    #[command(about = "Prints help information")]
     Help(HelpArgs),
 }
 
