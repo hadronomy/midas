@@ -1,15 +1,15 @@
 [tools]
-"cargo:git-cliff" = "latest"
-"cargo:cargo-nextest" = "latest"
-"cargo:cargo-edit" = "latest"
-"cargo:cargo-feature" = "latest"
-"cargo:cargo-dist" = "^0.25.1"
-"cargo:bacon" = "latest"
-"cargo:cargo-machete" = "latest"
+"cargo:bacon"          = "latest"
+"cargo:cargo-dist"     = "^0.25.1"
+"cargo:cargo-edit"     = "latest"
+"cargo:cargo-feature"  = "latest"
 "cargo:cargo-generate" = "latest"
-"cargo:just" = "latest"
-"uv" = "latest"
+"cargo:cargo-machete"  = "latest"
+"cargo:cargo-nextest"  = "latest"
+"cargo:git-cliff"      = "latest"
+"cargo:just"           = "latest"
+"uv"                   = "latest"
 
 [tasks.default]
 description = "Run bacon"
-run = ["bacon"]
+run         = ["bacon"]

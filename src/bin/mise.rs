@@ -1,10 +1,9 @@
 use anyhow::Context;
 use clap::{Arg, Command};
 use deno_runtime::deno_core::resolve_path;
+use midas::typescript::{TsError, TsRunner};
 use miette::*;
 use serde::{Deserialize, Serialize};
-
-use midas::typescript::{TsError, TsRunner};
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
 #[serde(rename_all = "camelCase")]
@@ -34,12 +33,7 @@ async fn main() -> Result<()> {
         .version("0.1.0")
         .author("The MisE Team")
         .about("MisE is a tool for running JavaScript and TypeScript code in Rust")
-        .arg(
-            Arg::new("script")
-                .help("The script to run")
-                .required(true)
-                .index(1),
-        );
+        .arg(Arg::new("script").help("The script to run").required(true).index(1));
 
     let matches = app.get_matches();
 

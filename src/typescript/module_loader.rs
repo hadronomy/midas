@@ -2,22 +2,13 @@ use std::cell::RefCell;
 use std::collections::HashMap;
 use std::rc::Rc;
 
-use anyhow::anyhow;
-use anyhow::bail;
-use anyhow::Error;
-use deno_ast::MediaType;
-use deno_ast::ParseParams;
-use deno_ast::SourceMapOption;
+use anyhow::{Error, anyhow, bail};
+use deno_ast::{MediaType, ParseParams, SourceMapOption};
 use deno_runtime::deno_core::error::AnyError;
-use deno_runtime::deno_core::resolve_import;
-use deno_runtime::deno_core::ModuleLoadResponse;
-use deno_runtime::deno_core::ModuleLoader;
-use deno_runtime::deno_core::ModuleSource;
-use deno_runtime::deno_core::ModuleSourceCode;
-use deno_runtime::deno_core::ModuleSpecifier;
-use deno_runtime::deno_core::ModuleType;
-use deno_runtime::deno_core::RequestedModuleType;
-use deno_runtime::deno_core::ResolutionKind;
+use deno_runtime::deno_core::{
+    ModuleLoadResponse, ModuleLoader, ModuleSource, ModuleSourceCode, ModuleSpecifier, ModuleType,
+    RequestedModuleType, ResolutionKind, resolve_import,
+};
 
 type SourceMapStore = Rc<RefCell<HashMap<String, Vec<u8>>>>;
 

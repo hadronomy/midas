@@ -1,4 +1,5 @@
-use std::{env, path::PathBuf};
+use std::env;
+use std::path::PathBuf;
 
 fn main() {
     if env::var_os("DOCS_RS").is_some() {

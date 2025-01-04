@@ -1,18 +1,15 @@
-use std::{rc::Rc, sync::Arc};
+use std::rc::Rc;
+use std::sync::Arc;
 
-use deno_core::ModuleSpecifier;
-use deno_core::*;
-use deno_runtime::permissions::RuntimePermissionDescriptorParser;
+use deno_core::{ModuleSpecifier, *};
 use deno_runtime::BootstrapOptions;
-use deno_runtime::{
-    deno_fs::RealFs,
-    deno_permissions::PermissionsContainer,
-    worker::{MainWorker, WorkerOptions, WorkerServiceOptions},
-};
+use deno_runtime::deno_fs::RealFs;
+use deno_runtime::deno_permissions::PermissionsContainer;
+use deno_runtime::permissions::RuntimePermissionDescriptorParser;
+use deno_runtime::worker::{MainWorker, WorkerOptions, WorkerServiceOptions};
 use miette::*;
-use serde::Deserialize;
-
 use module_loader::TypescriptModuleLoader;
+use serde::Deserialize;
 
 mod module_loader;
 
@@ -31,12 +28,7 @@ impl TsRunner {
         let permission_parser = Arc::new(RuntimePermissionDescriptorParser::new(fs.clone()));
         let permissions = PermissionsContainer::allow_all(permission_parser);
 
-        let mut runner = Self {
-            permissions,
-            main_module,
-            fs,
-            worker: None,
-        };
+        let mut runner = Self { permissions, main_module, fs, worker: None };
 
         runner.worker = Some(runner.create_worker());
         runner
@@ -62,9 +54,7 @@ impl TsRunner {
             },
             WorkerOptions {
                 bootstrap: BootstrapOptions {
-                    cpu_count: std::thread::available_parallelism()
-                        .map(|p| p.get())
-                        .unwrap_or(1),
+                    cpu_count: std::thread::available_parallelism().map(|p| p.get()).unwrap_or(1),
                     ..Default::default()
                 },
                 startup_snapshot: Some(WORKER_SNAPSHOT),
@@ -91,10 +81,7 @@ impl TsRunner {
                 .execute_main_module(&main_module)
                 .await
                 .map_err(|e| TsError::Execution(e.to_string()))?;
-            worker
-                .run_event_loop(false)
-                .await
-                .map_err(|e| TsError::Execution(e.to_string()))?;
+            worker.run_event_loop(false).await.map_err(|e| TsError::Execution(e.to_string()))?;
 
             let res = worker
                 .js_runtime
@@ -123,9 +110,7 @@ impl TsRunner {
     where
         T: serde::de::DeserializeOwned + Clone,
     {
-        self.eval_file()
-            .await
-            .map(|m: Module<T>| (*m.default()).clone())
+        self.eval_file().await.map(|m: Module<T>| (*m.default()).clone())
     }
 }
 
@@ -163,9 +148,7 @@ where
         }
 
         let wrapper = Wrapper::deserialize(deserializer)?;
-        Ok(Module {
-            default: wrapper.default,
-        })
+        Ok(Module { default: wrapper.default })
     }
 }
 
@@ -187,10 +170,12 @@ pub fn create_isolate_create_params() -> Option<v8::CreateParams> {
 
 #[cfg(test)]
 mod tests {
-    use super::*;
+    use std::io::Write;
+
     use anyhow::Context;
     use serde::Deserialize;
-    use std::io::Write;
+
+    use super::*;
 
     #[derive(Debug, Deserialize, Clone)]
     struct AppConfig {
@@ -225,9 +210,9 @@ mod tests {
 
         let script_url = resolve_path(
             temp_file.path().as_ref() as &std::path::Path,
-                & std::env::current_dir()
-                    .context("Unable to get CWD")
-                    .map_err(|e| TsError::Io(std::io::Error::new(std::io::ErrorKind::Other, e)))?,
+            &std::env::current_dir()
+                .context("Unable to get CWD")
+                .map_err(|e| TsError::Io(std::io::Error::new(std::io::ErrorKind::Other, e)))?,
         )
         .map_err(|e| TsError::Io(std::io::Error::new(std::io::ErrorKind::Other, e)))?;
 
