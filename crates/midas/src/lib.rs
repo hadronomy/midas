@@ -1,6 +1,6 @@
 pub use config::*;
 
 pub mod config;
-pub mod template;
+pub mod error;
 #[cfg(feature = "deno")]
 pub mod typescript;
