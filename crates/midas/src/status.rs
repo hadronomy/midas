@@ -6,7 +6,6 @@ pub(crate) enum ExitStatus {
     Success,
     /// The command failed due to an error in the user input.
     Failure,
-
     /// The command failed with an unexpected error.
     Error,
     /// The command's exit status is propagated from an external command.
