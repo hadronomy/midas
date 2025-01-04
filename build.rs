@@ -7,7 +7,7 @@ fn main() {
     }
 
     let output = PathBuf::from(env::var_os("OUT_DIR").unwrap());
-    let cli_snapshot_path = output.join("CLI_SNAPSHOT.bin");
+    let cli_snapshot_path = output.join("WORKER_SNAPSHOT.bin");
     create_cli_snapshot(cli_snapshot_path);
 }
 

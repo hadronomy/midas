@@ -13,7 +13,7 @@ use serde::Deserialize;
 
 mod module_loader;
 
-static WORKER_SNAPSHOT: &[u8] = include_bytes!(concat!(env!("OUT_DIR"), "/CLI_SNAPSHOT.bin"));
+static WORKER_SNAPSHOT: &[u8] = include_bytes!(concat!(env!("OUT_DIR"), "/WORKER_SNAPSHOT.bin"));
 
 pub struct TsRunner {
     permissions: PermissionsContainer,
