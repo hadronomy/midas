@@ -2,7 +2,6 @@ use std::ffi::OsString;
 use std::process::ExitCode;
 
 use clap::Parser;
-use clap::error::{ContextKind, ContextValue};
 use midas_cli::{Cli, Command};
 use miette::*;
 use owo_colors::OwoColorize;
@@ -33,7 +32,7 @@ where
             for err in causes {
                 eprintln!("  {} {}", "Caused by:".red().bold(), err.to_string().trim());
             }
-            ExitStatus::Error.into()   
+            ExitStatus::Error.into()
         }
     }
 }
