@@ -1,9 +1,11 @@
 [package]
-authors = { workspace = true }
-edition = { workspace = true }
-license = { workspace = true }
 name    = "midas"
 version = "0.1.0"
+
+authors.workspace    = true
+edition.workspace    = true
+license.workspace    = true
+repository.workspace = true
 
 [features]
 default = []
@@ -12,6 +14,7 @@ serde   = ["dep:serde", "serde_json", "serde_derive"]
 
 [dependencies]
 anyhow      = { workspace = true }
+clap        = { workspace = true }
 globset     = { workspace = true, features = ["serde"] }
 human-panic = { workspace = true }
 miette      = { workspace = true }
@@ -41,6 +44,12 @@ serde_json     = { workspace = true, optional = true }
 vfs            = { workspace = true }
 
 
+midas-cli = { workspace = true }
+
+
 [build-dependencies]
 deno_core    = { workspace = true, optional = true }
 deno_runtime = { workspace = true, optional = true }
+
+[[bin]]
+name = "midas"
