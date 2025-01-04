@@ -1,6 +1,7 @@
 [tools]
 "cargo-binstall"       = "1.10.17"
 "cargo:bacon"          = "latest"
+"cargo:cargo-deny"     = "latest"
 "cargo:cargo-dist"     = "^0.25.1"
 "cargo:cargo-edit"     = "latest"
 "cargo:cargo-feature"  = "latest"
