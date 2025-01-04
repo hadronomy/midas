@@ -3901,7 +3901,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "midas"
+name = "midas_core"
 version = "0.1.0"
 dependencies = [
  "anyhow",

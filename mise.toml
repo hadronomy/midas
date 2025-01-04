@@ -8,7 +8,6 @@
 "cargo:cargo-nextest"  = "latest"
 "cargo:git-cliff"      = "latest"
 "cargo:just"           = "latest"
-"uv"                   = "latest"
 
 [tasks.default]
 description = "Run bacon"

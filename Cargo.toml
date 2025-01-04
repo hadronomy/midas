@@ -1,100 +1,63 @@
-[package]
-authors = ["Pablo Hernandez (@hadronomy)"]
-edition = "2021"
-name    = "midas"
-version = "0.1.0"
+[workspace]
+members  = ["./crates/*"]
+resolver = "2"
 
-[dependencies]
-anyhow        = "1.0.95"
-clap          = { version = "4.5.23", features = ["derive"] }
-deno_ast      = "0.44.0"
-deno_core     = "0.327.0"
-deno_graph    = "0.86.5"
-deno_runtime  = "0.192.0"
-deno_semver   = "0.7.1"
-human-panic   = "2.0.2"
-miette        = { version = "7.4.0", features = ["fancy"] }
-node_resolver = "0.22.0"
-serde         = "1.0.216"
-serde_derive  = "1.0.216"
-serde_json    = "1.0.134"
-tempfile      = "3.14.0"
-thiserror     = "2.0.9"
-tokio         = "1.42.0"
+[workspace.package]
+edition    = "2021"
+license    = "MIT"
+repository = "https://github.com/hadronomy/midas"
 
-[build-dependencies]
-deno_core    = "0.327.0"
-deno_runtime = "0.192.0"
+# Lint rules that I like taken from
+# https://github.com/rolldown/rolldown/blob/main/Cargo.toml
+[workspace.lints.clippy]
+# Guidelines
+# - We should only disable rules globally if they are either false positives, chaotic, or does not make sense.
+# - Group are enabled with priority -1, so we could easily override some specific rules.
+#   - https://doc.rust-lang.org/stable/cargo/reference/manifest.html#the-lints-section
 
-[profile.dev.package.v8]
-# v8 miscompiles at opt-level=0
-opt-level = 1
+# --- restriction https://doc.rust-lang.org/clippy/usage.html#clippyrestriction
+dbg_macro    = "deny"
+print_stdout = "deny"
 
-[profile.release]
-codegen-units = 1
-incremental   = true
-lto           = true
-opt-level     = 'z'  # Optimize for size
+# I like the explicitness of this rule as it removes confusion around `clone`.
+# This increases readability, avoids `clone` mindlessly and heap allocating on accident.
+clone_on_ref_ptr                = "deny"
+empty_drop                      = "deny"
+exit                            = "deny"
+filetype_is_file                = "deny"
+get_unwrap                      = "deny"
+rc_buffer                       = "deny"
+rc_mutex                        = "deny"
+rest_pat_in_fully_bound_structs = "deny"
+unnecessary_safety_comment      = "deny"
 
-[profile.release.package.async-compression]
-opt-level = 3
-[profile.release.package.base64-simd]
-opt-level = 3
-[profile.release.package.brotli]
-opt-level = 3
-[profile.release.package.brotli-decompressor]
-opt-level = 3
-[profile.release.package.bytes]
-opt-level = 3
-[profile.release.package.deno_broadcast_channel]
-opt-level = 3
-[profile.release.package.deno_core]
-opt-level = 3
-[profile.release.package.deno_crypto]
-opt-level = 3
-[profile.release.package.deno_fetch]
-opt-level = 3
-[profile.release.package.deno_ffi]
-opt-level = 3
-[profile.release.package.deno_http]
-opt-level = 3
-[profile.release.package.deno_napi]
-opt-level = 3
-[profile.release.package.deno_net]
-opt-level = 3
-[profile.release.package.deno_node]
-opt-level = 3
-[profile.release.package.deno_runtime]
-opt-level = 3
-[profile.release.package.deno_tls]
-opt-level = 3
-[profile.release.package.deno_url]
-opt-level = 3
-[profile.release.package.deno_web]
-opt-level = 3
-[profile.release.package.deno_websocket]
-opt-level = 3
-[profile.release.package.fastwebsockets]
-opt-level = 3
-[profile.release.package.flate2]
-opt-level = 3
-[profile.release.package.futures-util]
-opt-level = 3
-[profile.release.package.hyper]
-opt-level = 3
-[profile.release.package.miniz_oxide]
-opt-level = 3
-[profile.release.package.num-bigint-dig]
-opt-level = 3
-[profile.release.package.rand]
-opt-level = 3
-[profile.release.package.serde]
-opt-level = 3
-[profile.release.package.serde_v8]
-opt-level = 3
-[profile.release.package.tokio]
-opt-level = 3
-[profile.release.package.url]
-opt-level = 3
-[profile.release.package.v8]
-opt-level = 3
+# --- pedantic #https://doc.rust-lang.org/clippy/usage.html#clippypedantic
+# To write the best rust code, pedantic group is enabled by default.
+pedantic = { level = "deny", priority = -1 }
+
+# Wizards, naming is too hard.
+module_inception        = "allow"
+module_name_repetitions = "allow"
+similar_names           = "allow"
+
+# Forwarding `Result` is a common pattern, this rule is too pedantic.
+missing_errors_doc = "allow"
+
+# #[must_use] is creating too much noise for this codebase, it does not add much value except nagging
+# the programmer to add a #[must_use] after clippy has been run.
+# Having #[must_use] everywhere also hinders readability.
+must_use_candidate = "allow"
+
+doc_markdown         = "allow"
+missing_const_for_fn = "allow"
+needless_for_each    = "allow"
+new_without_default  = "allow"
+# TODO: should review this rule.
+missing_panics_doc = "allow"
+
+# Order doesn't really matter https://rust-lang.github.io/rust-clippy/master/index.html#/inconsistent_struct_constructor
+inconsistent_struct_constructor = "allow"
+
+# Single match is equally readable as if/else. https://rust-lang.github.io/rust-clippy/master/index.html#/single_match
+single_match      = "allow"
+single_match_else = "allow"
