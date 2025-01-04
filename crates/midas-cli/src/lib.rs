@@ -20,7 +20,7 @@ const STYLES: Styles = Styles::styled()
     .placeholder(AnsiColor::Cyan.on_default());
 
 #[derive(Parser)]
-#[command(name = "midas", version = "0.1.0")]
+#[command(name = "midas", author, version = "0.1.0")]
 #[command(about = "Awesome templates.")]
 #[command(propagate_version = true)]
 #[command(

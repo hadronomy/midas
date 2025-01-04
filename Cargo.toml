@@ -9,11 +9,13 @@ license    = "MIT"
 repository = "https://github.com/hadronomy/midas"
 
 [workspace.dependencies]
+anstream    = "0.6.18"
 anyhow      = "1.0.95"
 clap        = { version = "4.5.23", features = ["derive", "env", "string", "wrap_help"] }
 globset     = { version = "0.4.15", features = ["serde"] }
 human-panic = "2.0.2"
 miette      = "7.4.0"
+owo-colors  = "4.1.0"
 petgraph    = "0.7.0"
 rkyv        = "0.8.9"
 semver      = "1.0.24"

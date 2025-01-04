@@ -3973,6 +3973,7 @@ dependencies = [
 name = "midas"
 version = "0.1.0"
 dependencies = [
+ "anstream",
  "anyhow",
  "clap",
  "deno_ast",
@@ -3988,6 +3989,7 @@ dependencies = [
  "midas-cli",
  "miette",
  "once_cell",
+ "owo-colors",
  "petgraph 0.7.0",
  "rkyv",
  "semver 1.0.24",
@@ -4535,6 +4537,12 @@ name = "outref"
 version = "0.5.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "4030760ffd992bef45b0ae3f10ce1aba99e33464c90d14dd7c039884963ddc7a"
+
+[[package]]
+name = "owo-colors"
+version = "4.1.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "fb37767f6569cd834a413442455e0f066d0d522de8630436e2a1761d9726ba56"
 
 [[package]]
 name = "p224"

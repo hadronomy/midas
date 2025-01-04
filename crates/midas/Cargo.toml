@@ -13,11 +13,13 @@ deno    = ["serde", "deno_ast", "deno_core", "deno_graph", "deno_runtime", "deno
 serde   = ["dep:serde", "serde_json", "serde_derive"]
 
 [dependencies]
+anstream    = { workspace = true }
 anyhow      = { workspace = true }
 clap        = { workspace = true }
 globset     = { workspace = true, features = ["serde"] }
 human-panic = { workspace = true }
 miette      = { workspace = true }
+owo-colors  = { workspace = true }
 petgraph    = { workspace = true }
 rkyv        = { workspace = true }
 semver      = { workspace = true }

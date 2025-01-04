@@ -8,7 +8,7 @@ license.workspace    = true
 repository.workspace = true
 
 [dependencies]
-clap.workspace = true
+clap = { workspace = true, features = ["derive", "string"] }
 
 [lints]
 workspace = true
