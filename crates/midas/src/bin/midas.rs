@@ -1,7 +1,7 @@
 use anyhow::Context;
 use clap::{Arg, Command};
 use deno_runtime::deno_core::resolve_path;
-use midas_core::typescript::{TsError, TsRunner};
+use midas::typescript::{TsError, TsRunner};
 use miette::*;
 use serde::{Deserialize, Serialize};
 
