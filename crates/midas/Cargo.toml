@@ -33,6 +33,7 @@ deno_semver  = { version = "0.7.1", optional = true }
 serde        = { version = "1.0.216", optional = true }
 serde_derive = { version = "1.0.216", optional = true }
 serde_json   = { version = "1.0.134", optional = true }
+file_type_enum = "2.0.1"
 
 
 [build-dependencies]

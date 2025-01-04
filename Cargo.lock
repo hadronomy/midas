@@ -2535,6 +2535,12 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "28dea519a9695b9977216879a3ebfddf92f1c08c05d984f8996aecd6ecdc811d"
 
 [[package]]
+name = "file_type_enum"
+version = "2.0.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "da3816621be5b3da37ea316a013382f0aebd6cd49fe9f3ee8cdbef35fcd7f12f"
+
+[[package]]
 name = "filetime"
 version = "0.2.25"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -3958,6 +3964,7 @@ dependencies = [
  "deno_graph",
  "deno_runtime",
  "deno_semver 0.7.1",
+ "file_type_enum",
  "globset",
  "human-panic",
  "miette",
