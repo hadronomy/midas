@@ -1,8 +1,9 @@
-use deno_core::ModuleSpecifier;
 use std::{rc::Rc, sync::Arc};
 
+use deno_core::ModuleSpecifier;
 use deno_core::*;
 use deno_runtime::permissions::RuntimePermissionDescriptorParser;
+use deno_runtime::BootstrapOptions;
 use deno_runtime::{
     deno_fs::RealFs,
     deno_permissions::PermissionsContainer,
@@ -15,51 +16,62 @@ use module_loader::TypescriptModuleLoader;
 
 mod module_loader;
 
+static WORKER_SNAPSHOT: &[u8] = include_bytes!(concat!(env!("OUT_DIR"), "/CLI_SNAPSHOT.bin"));
+
 pub struct TsRunner {
-    worker: Option<MainWorker>,
     permissions: PermissionsContainer,
     main_module: ModuleSpecifier,
     fs: Arc<RealFs>,
+    worker: Option<MainWorker>,
 }
 
 impl TsRunner {
     pub fn new(main_module: ModuleSpecifier) -> Self {
         let fs = Arc::new(RealFs);
         let permission_parser = Arc::new(RuntimePermissionDescriptorParser::new(fs.clone()));
+        let permissions = PermissionsContainer::allow_all(permission_parser);
 
-        Self {
-            worker: None,
-            permissions: PermissionsContainer::allow_all(permission_parser.clone()),
+        let mut runner = Self {
+            permissions,
             main_module,
             fs,
-        }
+            worker: None,
+        };
+
+        runner.worker = Some(runner.create_worker());
+        runner
     }
 
-    async fn get_or_create_worker(&mut self) -> Result<&mut MainWorker, TsError> {
-        if self.worker.is_none() {
-            self.worker = Some(MainWorker::bootstrap_from_options(
-                self.main_module.clone(),
-                WorkerServiceOptions {
-                    module_loader: Rc::new(TypescriptModuleLoader::default()),
-                    permissions: self.permissions.clone(),
-                    blob_store: Default::default(),
-                    broadcast_channel: Default::default(),
-                    feature_checker: Default::default(),
-                    node_services: Default::default(),
-                    npm_process_state_provider: Default::default(),
-                    root_cert_store_provider: Default::default(),
-                    fetch_dns_resolver: Default::default(),
-                    shared_array_buffer_store: Default::default(),
-                    compiled_wasm_module_store: Default::default(),
-                    v8_code_cache: Default::default(),
-                    fs: self.fs.clone(),
-                },
-                WorkerOptions {
+    fn create_worker(&self) -> MainWorker {
+        MainWorker::bootstrap_from_options(
+            self.main_module.clone(),
+            WorkerServiceOptions {
+                module_loader: Rc::new(TypescriptModuleLoader::default()),
+                permissions: self.permissions.clone(),
+                blob_store: Default::default(),
+                broadcast_channel: Default::default(),
+                feature_checker: Default::default(),
+                node_services: Default::default(),
+                npm_process_state_provider: Default::default(),
+                root_cert_store_provider: Default::default(),
+                fetch_dns_resolver: Default::default(),
+                shared_array_buffer_store: Default::default(),
+                compiled_wasm_module_store: Default::default(),
+                v8_code_cache: Default::default(),
+                fs: self.fs.clone(),
+            },
+            WorkerOptions {
+                bootstrap: BootstrapOptions {
+                    cpu_count: std::thread::available_parallelism()
+                        .map(|p| p.get())
+                        .unwrap_or(1),
                     ..Default::default()
                 },
-            ));
-        }
-        Ok(self.worker.as_mut().unwrap())
+                startup_snapshot: Some(WORKER_SNAPSHOT),
+                create_params: create_isolate_create_params(),
+                ..Default::default()
+            },
+        )
     }
 
     pub async fn eval_file<T>(&mut self) -> Result<Module<T>, TsError>
@@ -68,7 +80,7 @@ impl TsRunner {
     {
         let main_module = self.main_module.clone();
 
-        let worker = self.get_or_create_worker().await?;
+        let mut worker = self.worker.take().unwrap_or_else(|| self.create_worker());
 
         let future = async move {
             let mod_id = worker
@@ -166,11 +178,19 @@ where
     }
 }
 
+pub fn create_isolate_create_params() -> Option<v8::CreateParams> {
+    let maybe_mem_info = deno_runtime::sys_info::mem_info();
+    maybe_mem_info.map(|mem_info| {
+        v8::CreateParams::default().heap_limits_from_system_memory(mem_info.total, 0)
+    })
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
+    use anyhow::Context;
     use serde::Deserialize;
-    use std::fs::File;
+    use std::io::Write;
 
     #[derive(Debug, Deserialize, Clone)]
     struct AppConfig {
@@ -200,9 +220,20 @@ mod tests {
         export default config;
         "#;
 
-        let runner = TsRunner::default();
+        let mut temp_file = tempfile::NamedTempFile::new()?;
+        temp_file.write_all(ts_content.as_bytes())?;
 
-        let config: AppConfig = runner.eval_module(ts_content).await?;
+        let script_url = resolve_path(
+            temp_file.path().as_ref() as &std::path::Path,
+                & std::env::current_dir()
+                    .context("Unable to get CWD")
+                    .map_err(|e| TsError::Io(std::io::Error::new(std::io::ErrorKind::Other, e)))?,
+        )
+        .map_err(|e| TsError::Io(std::io::Error::new(std::io::ErrorKind::Other, e)))?;
+
+        let mut runner = TsRunner::new(script_url);
+
+        let config: AppConfig = runner.eval_module().await?;
 
         assert_eq!(config.database_url, "postgres://localhost:5432/mydb");
         assert_eq!(config.port, 8080);
