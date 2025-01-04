@@ -4,97 +4,42 @@ edition = "2021"
 name    = "midas"
 version = "0.1.0"
 
+[features]
+default = []
+deno    = ["serde", "deno_ast", "deno_core", "deno_graph", "deno_runtime", "deno_semver"]
+serde   = ["dep:serde", "serde_json", "serde_derive"]
+
 [dependencies]
-anyhow        = "1.0.95"
-clap          = { version = "4.5.23", features = ["derive"] }
-deno_ast      = "0.44.0"
-deno_core     = "0.327.0"
-deno_graph    = "0.86.5"
-deno_runtime  = "0.192.0"
-deno_semver   = "0.7.1"
-human-panic   = "2.0.2"
-miette        = { version = "7.4.0", features = ["fancy"] }
-node_resolver = "0.22.0"
-serde         = "1.0.216"
-serde_derive  = "1.0.216"
-serde_json    = "1.0.134"
-tempfile      = "3.14.0"
-thiserror     = "2.0.9"
-tokio         = "1.42.0"
+anyhow      = "1.0.95"
+human-panic = "2.0.2"
+miette      = "7.4.0"
+petgraph    = "0.6.5"
+rkyv        = "0.8.9"
+semver      = "1.0.24"
+tempfile    = "3.14.0"
+thiserror   = "2.0.9"
+tokio       = "1.42.0"
+
+# Optional deno dependencies
+deno_ast     = { version = "0.44.0", optional = true }
+deno_core    = { version = "0.327.0", optional = true }
+deno_graph   = { version = "0.86.5", optional = true }
+deno_runtime = { version = "0.192.0", optional = true }
+deno_semver  = { version = "0.7.1", optional = true }
+
+# Optional serde dependencies
+serde        = { version = "1.0.216", optional = true }
+serde_derive = { version = "1.0.216", optional = true }
+serde_json   = { version = "1.0.134", optional = true }
 
 [build-dependencies]
-deno_core    = "0.327.0"
-deno_runtime = "0.192.0"
+deno_core    = { version = "0.327.0", optional = true }
+deno_runtime = { version = "0.192.0", optional = true }
 
-[profile.dev.package.v8]
-# v8 miscompiles at opt-level=0
-opt-level = 1
+[dev-dependencies]
+clap   = { version = "4.5.23", features = ["derive"] }
+miette = { version = "7.4.0", features = ["fancy"] }
 
-[profile.release]
-codegen-units = 1
-incremental   = true
-lto           = true
-opt-level     = 'z'  # Optimize for size
-
-[profile.release.package.async-compression]
-opt-level = 3
-[profile.release.package.base64-simd]
-opt-level = 3
-[profile.release.package.brotli]
-opt-level = 3
-[profile.release.package.brotli-decompressor]
-opt-level = 3
-[profile.release.package.bytes]
-opt-level = 3
-[profile.release.package.deno_broadcast_channel]
-opt-level = 3
-[profile.release.package.deno_core]
-opt-level = 3
-[profile.release.package.deno_crypto]
-opt-level = 3
-[profile.release.package.deno_fetch]
-opt-level = 3
-[profile.release.package.deno_ffi]
-opt-level = 3
-[profile.release.package.deno_http]
-opt-level = 3
-[profile.release.package.deno_napi]
-opt-level = 3
-[profile.release.package.deno_net]
-opt-level = 3
-[profile.release.package.deno_node]
-opt-level = 3
-[profile.release.package.deno_runtime]
-opt-level = 3
-[profile.release.package.deno_tls]
-opt-level = 3
-[profile.release.package.deno_url]
-opt-level = 3
-[profile.release.package.deno_web]
-opt-level = 3
-[profile.release.package.deno_websocket]
-opt-level = 3
-[profile.release.package.fastwebsockets]
-opt-level = 3
-[profile.release.package.flate2]
-opt-level = 3
-[profile.release.package.futures-util]
-opt-level = 3
-[profile.release.package.hyper]
-opt-level = 3
-[profile.release.package.miniz_oxide]
-opt-level = 3
-[profile.release.package.num-bigint-dig]
-opt-level = 3
-[profile.release.package.rand]
-opt-level = 3
-[profile.release.package.serde]
-opt-level = 3
-[profile.release.package.serde_v8]
-opt-level = 3
-[profile.release.package.tokio]
-opt-level = 3
-[profile.release.package.url]
-opt-level = 3
-[profile.release.package.v8]
-opt-level = 3
+[[example]]
+name              = "read_config"
+required-features = ["deno"]

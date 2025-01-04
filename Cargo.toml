@@ -61,3 +61,76 @@ inconsistent_struct_constructor = "allow"
 # Single match is equally readable as if/else. https://rust-lang.github.io/rust-clippy/master/index.html#/single_match
 single_match      = "allow"
 single_match_else = "allow"
+
+[profile.dev.package.v8]
+# v8 miscompiles at opt-level=0
+opt-level = 1
+
+[profile.release]
+codegen-units = 1
+incremental   = true
+lto           = true
+opt-level     = 'z'  # Optimize for size
+
+[profile.release.package.async-compression]
+opt-level = 3
+[profile.release.package.base64-simd]
+opt-level = 3
+[profile.release.package.brotli]
+opt-level = 3
+[profile.release.package.brotli-decompressor]
+opt-level = 3
+[profile.release.package.bytes]
+opt-level = 3
+[profile.release.package.deno_broadcast_channel]
+opt-level = 3
+[profile.release.package.deno_core]
+opt-level = 3
+[profile.release.package.deno_crypto]
+opt-level = 3
+[profile.release.package.deno_fetch]
+opt-level = 3
+[profile.release.package.deno_ffi]
+opt-level = 3
+[profile.release.package.deno_http]
+opt-level = 3
+[profile.release.package.deno_napi]
+opt-level = 3
+[profile.release.package.deno_net]
+opt-level = 3
+[profile.release.package.deno_node]
+opt-level = 3
+[profile.release.package.deno_runtime]
+opt-level = 3
+[profile.release.package.deno_tls]
+opt-level = 3
+[profile.release.package.deno_url]
+opt-level = 3
+[profile.release.package.deno_web]
+opt-level = 3
+[profile.release.package.deno_websocket]
+opt-level = 3
+[profile.release.package.fastwebsockets]
+opt-level = 3
+[profile.release.package.flate2]
+opt-level = 3
+[profile.release.package.futures-util]
+opt-level = 3
+[profile.release.package.hyper]
+opt-level = 3
+[profile.release.package.miniz_oxide]
+opt-level = 3
+[profile.release.package.num-bigint-dig]
+opt-level = 3
+[profile.release.package.rand]
+opt-level = 3
+[profile.release.package.serde]
+opt-level = 3
+[profile.release.package.serde_v8]
+opt-level = 3
+[profile.release.package.tokio]
+opt-level = 3
+[profile.release.package.url]
+opt-level = 3
+[profile.release.package.v8]
+opt-level = 3

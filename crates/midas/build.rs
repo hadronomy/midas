@@ -1,16 +1,22 @@
 use std::env;
+#[cfg(feature = "deno")]
 use std::path::PathBuf;
 
 fn main() {
+    #[expect(clippy::needless_return)]
     if env::var_os("DOCS_RS").is_some() {
         return;
     }
 
-    let output = PathBuf::from(env::var_os("OUT_DIR").unwrap());
-    let cli_snapshot_path = output.join("WORKER_SNAPSHOT.bin");
-    create_cli_snapshot(cli_snapshot_path);
+    #[cfg(feature = "deno")]
+    {
+        let output = PathBuf::from(env::var_os("OUT_DIR").unwrap());
+        let cli_snapshot_path = output.join("WORKER_SNAPSHOT.bin");
+        create_cli_snapshot(cli_snapshot_path);
+    }
 }
 
+#[cfg(feature = "deno")]
 fn create_cli_snapshot(snapshot_path: PathBuf) {
     use deno_runtime::ops::bootstrap::SnapshotOptions;
 
@@ -23,6 +29,7 @@ fn create_cli_snapshot(snapshot_path: PathBuf) {
     deno_runtime::snapshot::create_runtime_snapshot(snapshot_path, snapshot_options, vec![]);
 }
 
+#[cfg(feature = "deno")]
 mod ts {
     pub(crate) fn version() -> String {
         let file_text = std::fs::read_to_string("tsc/00_typescript.js").unwrap();
