@@ -1,13 +1,20 @@
 [tools]
+"cargo-binstall"       = "1.10.17"
 "cargo:bacon"          = "latest"
 "cargo:cargo-dist"     = "^0.25.1"
 "cargo:cargo-edit"     = "latest"
 "cargo:cargo-feature"  = "latest"
 "cargo:cargo-generate" = "latest"
+"cargo:cargo-insta"    = "latest"
 "cargo:cargo-machete"  = "latest"
 "cargo:cargo-nextest"  = "latest"
+"cargo:cargo-show"     = { version = "latest", os = ["linux", "macos"] }
 "cargo:git-cliff"      = "latest"
 "cargo:just"           = "latest"
+"cargo:toml-cli"       = "latest"
+"cargo:usage-cli"      = { version = "latest", os = ["linux", "macos"] }
+"jq"                   = "latest"
+"taplo"                = "latest"
 
 [tasks.default]
 description = "Run bacon"
