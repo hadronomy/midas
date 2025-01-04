@@ -1,0 +1,7 @@
+[package]
+name = "midas"
+authors = ["Pablo Hernandez (@hadronomy)"]
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
