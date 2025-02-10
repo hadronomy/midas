@@ -1,11 +1,11 @@
 [package]
-name    = "midas"
-version = "0.1.0"
+name = "midas"
 
 authors.workspace    = true
 edition.workspace    = true
 license.workspace    = true
 repository.workspace = true
+version.workspace    = true
 
 [features]
 default = []

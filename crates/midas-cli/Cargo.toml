@@ -1,14 +1,15 @@
 [package]
-name    = "midas-cli"
-version = "0.1.0"
+name = "midas-cli"
 
 authors.workspace    = true
 edition.workspace    = true
 license.workspace    = true
 repository.workspace = true
+version.workspace    = true
 
 [dependencies]
-clap = { workspace = true, features = ["derive", "string"] }
+anstream.workspace = true
+clap               = { workspace = true, features = ["derive", "string"] }
 
 [lints]
 workspace = true

@@ -1,30 +1,29 @@
 use std::ffi::OsString;
 use std::process::ExitCode;
 
-use clap::Parser;
+use clap::{CommandFactory, Parser};
 pub use error::Error;
 use midas_cli::{Cli, Command};
 use miette::*;
-use owo_colors::OwoColorize;
-use status::ExitStatus;
 
 pub mod error;
-pub(crate) mod status;
 
 #[cfg(feature = "deno")]
 pub mod typescript;
 
-pub fn main<Args, T>(args: Args) -> ExitCode
+pub fn main<Args, T>(args: Args) -> Result<ExitCode>
 where
     Args: Iterator<Item = T>,
     T: Into<OsString> + Clone,
 {
     let cli = match Cli::try_parse_from(args) {
         Ok(cli) => cli,
-        Err(err) => err.exit(),
+        Err(err) => {
+            err.exit();
+        }
     };
 
-    let miette_hook = miette::set_hook(Box::new(|_| {
+    miette::set_hook(Box::new(|_| {
         Box::new(
             miette::MietteHandlerOpts::new()
                 .break_words(false)
@@ -33,23 +32,15 @@ where
                 .build(),
         )
     }))
-    .map_err(|err| Error::SetupError(err.into()));
+    .map_err(|err| Error::SetupError(err.into()))?;
 
-    if let Err(err) = miette_hook {
-        eprintln!("{} {}", "error:".red().bold(), err.to_string().trim());
-        return ExitStatus::Error.into();
-    }
-
-    let result: Result<ExitCode> = match *cli.command {
-        Command::Help(_) => Err(Error::Unimplemented),
-    }
-    .wrap_err("Failed to execute command");
-
-    match result {
-        Ok(exit_code) => exit_code,
-        Err(err) => {
-            eprintln!("{} {:?}", "error:".red().bold(), err);
-            ExitStatus::Error.into()
+    match *cli.command {
+        // execute help
+        Command::Help(_) => {
+            Cli::command().print_help().into_diagnostic()?;
+            Ok::<_, Error>(ExitCode::SUCCESS)
         }
+        _ => Err(Error::Unimplemented),
     }
+    .wrap_err("Failed to execute command")
 }

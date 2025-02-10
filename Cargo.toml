@@ -3,10 +3,11 @@ members  = ["./crates/*"]
 resolver = "2"
 
 [workspace.package]
-authors    = ["Pablo Hernandez (@hadronomy)"]
+authors    = ["Pablo Hernandez <hadronomy@gmail.com> (https://hadronomy.com/)"]
 edition    = "2021"
 license    = "MIT"
 repository = "https://github.com/hadronomy/midas"
+version    = "0.1.0"
 
 [workspace.dependencies]
 anstream    = "0.6.18"
@@ -20,10 +21,10 @@ petgraph    = "0.7.0"
 rkyv        = "0.8.9"
 semver      = "1.0.24"
 tempfile    = "3.15.0"
+textwrap    = "0.16.1"
 thiserror   = "2.0.9"
 tokio       = "1.42.0"
 walkdir     = "2.5.0"
-textwrap = "0.16.1"
 
 
 # Optional deno dependencies
